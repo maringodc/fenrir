@@ -21,74 +21,87 @@ async function setupGame(interaction, title, number) {
 
 	console.log('Setting up the game with title: ' + title);
 
+	// 4 Categories
 	const mainCategory = await interaction.guild.channels.create({
 		name: 'WW' + number + ' - ' + title,
 		type: ChannelType.GuildCategory,
 		permissionOverwrites: getCategoryPermissionsByType("TYPE_MAIN"),
 	});
-	mainCategory.setPosition(3);
 
 	const rolesCategory = await interaction.guild.channels.create({
 		name: 'WW' + number + ' - Speciale Rollen',
 		type: ChannelType.GuildCategory,
 		permissionOverwrites: getCategoryPermissionsByType("TYPE_ROLES"),
 	}).then();
-	rolesCategory.setPosition(3);
 
 	const bond1Category = await interaction.guild.channels.create({
 		name: 'WW' + number + ' - Bondjes 1',
 		type: ChannelType.GuildCategory,
 		permissionOverwrites: getCategoryPermissionsByType("TYPE_BOND"),
 	});
-	bond1Category.setPosition(3);
 
 	const bond2Category = await interaction.guild.channels.create({
 		name: 'WW' + number + ' - Bondjes 2',
 		type: ChannelType.GuildCategory,
 		permissionOverwrites: getCategoryPermissionsByType("TYPE_BOND"),
 	});
-	bond2Category.setPosition(3);
 
-	const channInschrijvingen = await interaction.guild.channels.create({
+	// Channels in Main Category
+	const channelInschrijvingen = await interaction.guild.channels.create({
 		name: 'Inschrijvingen',
 		type: ChannelType.GuildText,
 		parent: mainCategory.id,
-		permissionOverwrites: getChannelPermissionsByType("TYPE_SIGNUP"),
+		permissionOverwrites: getChannelPermissionsByType("CHANNEL_TYPE_SIGNUP"),
 	});
 
-	const channStembus = await interaction.guild.channels.create({
+	const channelStembus = await interaction.guild.channels.create({
 		name: 'Stembus',
 		type: ChannelType.GuildText,
 		parent: mainCategory.id,
-		permissionOverwrites: getChannelPermissionsByType("TYPE_PLAY"),
+		permissionOverwrites: getChannelPermissionsByType("CHANNEL_TYPE_PLAY"),
 	});
 
-	const channTactiek = await interaction.guild.channels.create({
+	const channelTactiek = await interaction.guild.channels.create({
 		name: 'Tactiek',
 		type: ChannelType.GuildText,
 		parent: mainCategory.id,
-		permissionOverwrites: getChannelPermissionsByType("TYPE_PLAY"),
+		permissionOverwrites: getChannelPermissionsByType("CHANNEL_TYPE_PLAY"),
 	});
 
-	const channRP1 = await interaction.guild.channels.create({
+	const channelRP1 = await interaction.guild.channels.create({
 		name: 'RP - 1',
 		type: ChannelType.GuildText,
 		parent: mainCategory.id,
-		permissionOverwrites: getChannelPermissionsByType("TYPE_PLAY"),
+		permissionOverwrites: getChannelPermissionsByType("CHANNEL_TYPE_PLAY"),
 	});
 
-	const channRP2 = await interaction.guild.channels.create({
+	const channelRP2 = await interaction.guild.channels.create({
 		name: 'RP - 2',
 		type: ChannelType.GuildText,
 		parent: mainCategory.id,
-		permissionOverwrites: getChannelPermissionsByType("TYPE_PLAY"),
+		permissionOverwrites: getChannelPermissionsByType("CHANNEL_TYPE_PLAY"),
 	});
 
-	const channDodenrijk = await interaction.guild.channels.create({
+	const channelDodenrijk = await interaction.guild.channels.create({
 		name: 'Dodenrijk',
 		type: ChannelType.GuildText,
 		parent: mainCategory.id,
-		permissionOverwrites: getChannelPermissionsByType("TYPE_DOOD"),
+		permissionOverwrites: getChannelPermissionsByType("CHANNEL_TYPE_DOOD"),
+	});
+
+	// Both channels for Bondjes
+	const channelBond1 = await interaction.guild.channels.create({
+		name: 'Bondjes 1',
+		type: ChannelType.GuildText,
+		parent: bond1Category.id,
+		permissionOverwrites: getChannelPermissionsByType("CHANNEL_TYPE_BOND"),
+	});
+
+	const channelBond2 = await interaction.guild.channels.create({
+		name: 'Bondjes 2',
+		type: ChannelType.GuildText,
+		parent: bond2Category.id,
+		permissionOverwrites: getChannelPermissionsByType("CHANNEL_TYPE_BOND"),
 	});
 
 	return true;
@@ -223,7 +236,7 @@ function getChannelPermissionsByType(type) {
 			],
 		},
 	];
-	if (type === "TYPE_SIGNUP") {
+	if (type === "CHANNEL_TYPE_SIGNUP") {
 		permissions.push(
 			{
 				id: roleLevend.id,
@@ -261,7 +274,7 @@ function getChannelPermissionsByType(type) {
 			}
 		);
 	}
-	else if (type === "TYPE_PLAY") {
+	else if (type === "CHANNEL_TYPE_PLAY") {
 		permissions.push(
 			{
 				id: roleLevend.id,
@@ -305,7 +318,7 @@ function getChannelPermissionsByType(type) {
 			}
 		);
 	}
-	else if (type === "TYPE_DOOD") {
+	else if (type === "CHANNEL_TYPE_DOOD") {
 		permissions.push(
 			{
 				id: roleLevend.id,
@@ -338,6 +351,17 @@ function getChannelPermissionsByType(type) {
 					f.ViewChannel,
 				],
 				deny: [
+					f.SendMessages,
+				],
+			}
+		);
+	}
+	else if (type === "CHANNEL_TYPE_BOND") {
+		permissions.push(
+			{
+				id: roleLevend.id,
+				allow: [
+					f.ViewChannel,
 					f.SendMessages,
 				],
 			}
