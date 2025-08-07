@@ -5,7 +5,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('currentgame')
 		.setDescription('Informatie over het huidige spel')
-		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		const userdata = interaction.member;
 		const isAdmin = userdata.roles.cache.some(role => role.name === 'Admin');

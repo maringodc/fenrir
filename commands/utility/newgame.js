@@ -1,9 +1,10 @@
-const { SlashCommandBuilder, ActionRowBuilder, Events, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('newgame')
-		.setDescription('Nieuw spel opzetten!'),
+		.setDescription('Nieuw spel opzetten!')
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		// Create the modal
 		const modal = new ModalBuilder()

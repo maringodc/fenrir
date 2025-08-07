@@ -1,10 +1,11 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { devId } = require('./../../config.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('deletecats')
-		.setDescription('Delete WW cats'),
+		.setDescription('Delete WW cats')
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 
 		// For me only.
