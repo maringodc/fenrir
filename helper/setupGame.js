@@ -362,6 +362,19 @@ function getChannelPermissionsByType(type) {
 				id: roleLevend.id,
 				allow: [
 					f.ViewChannel,
+				],
+				deny: [
+					f.SendMessages,
+				]
+			}
+		);
+		permissions.push(
+			{
+				id: roleSchermen.id,
+				allow: [
+					f.ViewChannel,
+				],
+				deny: [
 					f.SendMessages,
 				],
 			}
