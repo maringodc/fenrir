@@ -32,7 +32,7 @@ module.exports = {
 				const gameNumber = interaction.fields.getTextInputValue('gameNumber');
 				console.log({ gameTitle, gameNumber });
 				await interaction.reply({ content: 'Your game will be created. /n Gametitle: ' + gameTitle });
-				setupGame.setupGame(interaction, gameTitle, gameNumber);
+				await setupGame.setupGame(interaction, gameTitle, gameNumber);
 			}
 		}
 	},

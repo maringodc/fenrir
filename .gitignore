@@ -1,5 +1,6 @@
 /node_modules
 /.idea
+/backup
 
 config.json
 currentgame.json
