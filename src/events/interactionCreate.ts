@@ -1,6 +1,7 @@
 import type {Event} from '../interfaces';
 import { CommandInteraction, ModalSubmitInteraction} from 'discord.js'
 import { setupGame } from '../helper/setupGame'
+import type {TextInputModalData} from "discord.js/typings";
 
 export default {
 	name: 'interactionCreate',
@@ -10,10 +11,6 @@ export default {
 		if (interaction instanceof CommandInteraction) {
 
 			const command = client.commands.get(interaction.commandName)
-			console.log("Command: ")
-			console.log(interaction)
-			console.log(interaction.commandName)
-			console.log(command)
 
 			if (!command) return
 
@@ -29,7 +26,20 @@ export default {
 		}
 		else if (interaction instanceof ModalSubmitInteraction){
 			if(interaction.customId === 'newgame'){
-
+				console.log("Got modal submit for newgame")
+				// @ts-ignore
+				const gameNumber: TextInputModalData = interaction.fields.getField("gameNumberInput");
+				// @ts-ignore
+				const gameTitle: TextInputModalData = interaction.fields.getField("gameNumberInput");
+				console.log(interaction.fields.getField("gameTitleInput"));
+				const reply = await setupGame(
+					interaction,
+					gameNumber.value,
+					gameTitle.value
+				);
+				if(reply){
+					await interaction.reply({content: "De categorieën en kanalen zijn aangemaakt."})
+				}
 			}
 		}
 	},

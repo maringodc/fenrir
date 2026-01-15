@@ -1,15 +1,11 @@
 import {ModalSubmitInteraction, Role, PermissionsBitField , ChannelType} from "discord.js";
+import {log} from "../utils/utils";
 
 const f = PermissionsBitField.Flags;
-const basePosition = 2;
-let everyoneRole: Role,
-	roleDM: Role,
-	roleLevend: Role,
-	roleDood: Role,
-	roleToeschouwer: Role,
-	roleSchermen: Role;
+const roleNames: string[] = ["DM","Levend","Dood","Toeschouwer","Achter de schermen"]
+const roles: Role[] = [];
 
-async function setupGame(interaction: ModalSubmitInteraction, title: string, number: string) {
+async function setupGame(interaction: ModalSubmitInteraction, number: string, title: string) {
 
 	if(!interaction.guild){
 		console.log('No guild found..');
@@ -19,6 +15,7 @@ async function setupGame(interaction: ModalSubmitInteraction, title: string, num
 
 	if(!getRoles(interaction)){
 		console.log("Something went wrong grabbing roles..");
+		return;
 	}
 
 	console.log('Setting up the game with title: ' + title);
@@ -111,309 +108,93 @@ async function setupGame(interaction: ModalSubmitInteraction, title: string, num
 
 function getRoles(interaction: ModalSubmitInteraction): boolean{
 	if(!interaction.guild) return false
-
-	everyoneRole = interaction.guild.roles.everyone;
-	const troleDM = interaction.guild.roles.cache.find(role => role.name === 'DM');
-	const troleLevend = interaction.guild.roles.cache.find(role => role.name === 'Levend');
-	const troleDood = interaction.guild.roles.cache.find(role => role.name === 'Dood');
-	const troleToeschouwer = interaction.guild.roles.cache.find(role => role.name === 'Toeschouwer');
-	const troleSchermen = interaction.guild.roles.cache.find(role => role.name === 'Achter de schermen');
-
-	if(typeof troleDM === "undefined"){
-		return false;
+	roles.push(interaction.guild.roles.everyone)
+	for(const roleName of roleNames){
+		const tempRole: Role | undefined = interaction.guild.roles.cache.find(role => role.name === roleName);
+		if(tempRole instanceof Role){
+			roles.push(tempRole)
+		}
+		else{
+			log("ERROR", "helper/setupGame.ts", `Can't find role: ${roleName}`)
+			return false
+		}
 	}
-	else {
-		roleDM = troleDM
-	}
-
-
-	return true;
+	return true
 }
 
-function getCategoryPermissionsByType(type) {
-	let permissions = [
-		{
-			id: everyoneRole.id,
-			deny: [
-				f.ViewChannel,
-				f.CreatePrivateThreads,
-			],
-		},
-		{
-			id: roleDM.id,
-			allow: [
-				f.ViewChannel,
-				f.ManageChannels,
-				f.SendMessages,
-				f.ManageMessages,
-			],
-		},
-		{
-			id: roleDM.id,
-			allow: [
-				f.ViewChannel,
-				f.ManageChannels,
-				f.SendMessages,
-				f.ManageMessages,
-			],
-			deny: [
-				f.ViewChannel,
-				f.CreatePrivateThreads,
-			],
-		},
-	];
+function getCategoryPermissionsByType(type: string){
+	let permissions: ({ id:any; deny?: any[]; allow?: any[] })[] = []
 	if (type === "TYPE_MAIN") {
-		permissions.push(
-			{
-				id: roleLevend.id,
-				allow: [
-					f.ViewChannel,
-					f.SendMessages,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleDood.id;
-				deny: [
-					f.SendMessages,
-					f.SendMessagesInThreads,
-				];
-			}
-		);
-		permissions.push(
-			{
-				id: roleToeschouwer.id,
-				allow: [
-					f.ViewChannel,
-				],
-				deny: [
-					f.SendMessages,
-					f.SendMessagesInThreads,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleSchermen.id,
-				allow: [
-					f.ViewChannel,
-				],
-				deny: [
-					f.SendMessages,
-					f.SendMessagesInThreads,
-				],
-			}
-		);
+		for(let role of roles){
+			if(role.name === '@everyone') permissions.push({id: role.id,deny: [f.ViewChannel,f.CreatePrivateThreads]})
+			if(role.name === 'DM') permissions.push({id: role.id,allow: [f.ViewChannel,f.ManageChannels,f.SendMessages,f.ManageMessages]})
+			if(role.name === 'Levend') permissions.push({id: role.id,allow: [f.ViewChannel,f.SendMessages]})
+			if(role.name === 'Dood') permissions.push({id: role.id,deny: [f.SendMessages,f.SendMessagesInThreads]})
+			if(role.name === 'Toeschouwer') permissions.push({id: role.id,allow: [f.ViewChannel],deny: [f.SendMessages,f.SendMessagesInThreads]})
+			if(role.name === 'Achter de schermen') permissions.push({id: role.id,allow: [f.ViewChannel],deny: [f.SendMessages,f.SendMessagesInThreads]})
+		}
 	}
 	else if (type === "TYPE_ROLES") {
-		permissions.push(
-			{
-				id: roleSchermen.id,
-				allow: [
-					f.ViewChannel,
-				],
-				deny: [
-					f.SendMessages,
-					f.SendMessagesInThreads,
-				],
-			}
-		);
+		for(let role of roles){
+			if(role.name === '@everyone') permissions.push({id: role.id,deny: [f.ViewChannel,f.CreatePrivateThreads]})
+			if(role.name === 'DM') permissions.push({id: role.id,allow: [f.ViewChannel,f.ManageChannels,f.SendMessages,f.ManageMessages]})
+			if(role.name === 'Achter de schermen') permissions.push({id: role.id,allow: [f.ViewChannel],deny: [f.SendMessages,f.SendMessagesInThreads]})
+		}
 	}
-	else if (type === "TYPE_BOND") {
-		permissions.push(
-			{
-				id: roleLevend.id,
-				allow: [
-					f.SendMessages,
-					f.ManageChannels,
-					f.ManageRoles,
-				],
-				deny: [
-					f.ViewChannel,
-				]
-			}
-		);
-		permissions.push(
-			{
-				id: roleSchermen.id,
-				allow: [
-					f.ViewChannel,
-				],
-				deny: [
-					f.SendMessages,
-					f.SendMessagesInThreads,
-				],
-			}
-		);
+	if (type === "TYPE_BOND") {
+		for(let role of roles){
+			if(role.name === '@everyone') permissions.push({id: role.id,deny: [f.ViewChannel,f.CreatePrivateThreads]})
+			if(role.name === 'DM') permissions.push({id: role.id,allow: [f.ViewChannel,f.ManageChannels,f.SendMessages,f.ManageMessages]})
+			if(role.name === 'Levend') permissions.push({id: role.id,allow: [f.SendMessages,f.ManageChannels,f.ManageRoles],deny: [f.ViewChannel,]})
+			if(role.name === 'Achter de schermen') permissions.push({id: role.id,allow: [f.ViewChannel],deny: [f.SendMessages,f.SendMessagesInThreads]})
+		}
 	}
 	return permissions;
 }
 
-function getChannelPermissionsByType(type) {
-	const permissions = [
-		{
-			id: everyoneRole.id,
-			deny: [
-				f.ViewChannel,
-				f.CreatePrivateThreads,
-			],
-		},
-		{
-			id: roleDM.id,
-			allow: [
-				f.ViewChannel,
-				f.ManageChannels,
-				f.SendMessages,
-				f.ManageMessages,
-			],
-		},
-	];
+function getChannelPermissionsByType(type: string) {
+	let permissions: ({ id: any; deny?: any[]; allow?: any[] })[] = []
 	if (type === "CHANNEL_TYPE_SIGNUP") {
-		permissions.push(
-			{
-				id: roleLevend.id,
-				allow: [
-					f.ViewChannel,
-					f.SendMessages,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleDood.id,
-				allow: [
-					f.ViewChannel,
-					f.SendMessages,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleToeschouwer.id,
-				allow: [
-					f.ViewChannel,
-					f.SendMessages,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleSchermen.id,
-				allow: [
-					f.ViewChannel,
-					f.SendMessages,
-				],
-			}
-		);
+		for (let role of roles) {
+			if(role.name === '@everyone') permissions.push({id: role.id,deny:[f.ViewChannel,f.CreatePrivateThreads]})
+			if(role.name === 'DM') permissions.push({id: role.id,allow:[f.ViewChannel,f.ManageChannels,f.SendMessages,f.ManageMessages]})
+			if(role.name === 'Levend') permissions.push({id: role.id,allow:[f.ViewChannel],deny:[f.SendMessages]})
+			if(role.name === 'Dood') permissions.push({id: role.id,allow:[f.ViewChannel,f.SendMessages]})
+			if(role.name === 'Toeschouwer') permissions.push({id: role.id,allow:[f.ViewChannel,f.SendMessages]})
+			if(role.name === 'Achter de schermen') permissions.push({id: role.id,allow:[f.ViewChannel,f.SendMessages]})
+		}
 	}
-	else if (type === "CHANNEL_TYPE_PLAY") {
-		permissions.push(
-			{
-				id: roleLevend.id,
-				allow: [
-					f.ViewChannel,
-					f.SendMessages,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleDood.id,
-				allow: [
-					f.ViewChannel,
-				],
-				deny: [
-					f.SendMessages,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleToeschouwer.id,
-				allow: [
-					f.ViewChannel,
-				],
-				deny: [
-					f.SendMessages,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleSchermen.id,
-				allow: [
-					f.ViewChannel,
-				],
-				deny: [
-					f.SendMessages,
-				],
-			}
-		);
+	if (type === "CHANNEL_TYPE_PLAY") {
+		for (let role of roles) {
+			if(role.name === '@everyone') permissions.push({id: role.id,deny:[f.ViewChannel,f.CreatePrivateThreads]})
+			if(role.name === 'DM') permissions.push({id: role.id,allow:[f.ViewChannel,f.ManageChannels,f.SendMessages,f.ManageMessages]})
+			if(role.name === 'Levend') permissions.push({id: role.id,allow:[f.ViewChannel,f.SendMessages]})
+			if(role.name === 'Dood') permissions.push({id: role.id,allow:[f.ViewChannel],deny:[f.SendMessages]})
+			if(role.name === 'Toeschouwer') permissions.push({id: role.id,allow:[f.ViewChannel],deny:[f.SendMessages]})
+			if(role.name === 'Achter de schermen') permissions.push({id: role.id,allow:[f.ViewChannel],deny:[f.SendMessages]})
+		}
 	}
-	else if (type === "CHANNEL_TYPE_DOOD") {
-		permissions.push(
-			{
-				id: roleLevend.id,
-				deny: [
-					f.ViewChannel,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleDood.id,
-				allow: [
-					f.ViewChannel,
-					f.SendMessages,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleToeschouwer.id,
-				deny: [
-					f.ViewChannel,
-				],
-			}
-		);
-		permissions.push(
-			{
-				id: roleSchermen.id,
-				allow: [
-					f.ViewChannel,
-				],
-				deny: [
-					f.SendMessages,
-				],
-			}
-		);
+	if (type === "CHANNEL_TYPE_DOOD") {
+		for (let role of roles) {
+			if(role.name === '@everyone') permissions.push({id: role.id,deny:[f.ViewChannel,f.CreatePrivateThreads]})
+			if(role.name === 'DM') permissions.push({id: role.id,allow:[f.ViewChannel,f.ManageChannels,f.SendMessages,f.ManageMessages]})
+			if(role.name === 'Levend') permissions.push({id: role.id,deny:[f.ViewChannel]})
+			if(role.name === 'Dood') permissions.push({id: role.id,allow:[f.ViewChannel,f.SendMessages]})
+			if(role.name === 'Toeschouwer') permissions.push({id: role.id,deny:[f.ViewChannel]})
+			if(role.name === 'Achter de schermen') permissions.push({id: role.id,allow:[f.ViewChannel],deny:[f.SendMessages]})
+		}
 	}
-	else if (type === "CHANNEL_TYPE_BOND") {
-		permissions.push(
-			{
-				id: roleLevend.id,
-				allow: [
-					f.ViewChannel,
-				],
-				deny: [
-					f.SendMessages,
-				]
-			}
-		);
-		permissions.push(
-			{
-				id: roleSchermen.id,
-				allow: [
-					f.ViewChannel,
-				],
-				deny: [
-					f.SendMessages,
-				],
-			}
-		);
+	if (type === "CHANNEL_TYPE_BOND") {
+		for (let role of roles) {
+			if(role.name === '@everyone') permissions.push({id: role.id,deny:[f.ViewChannel,f.CreatePrivateThreads]})
+			if(role.name === 'DM') permissions.push({id: role.id,allow:[f.ViewChannel,f.ManageChannels,f.SendMessages,f.ManageMessages]})
+			if(role.name === 'Levend') permissions.push({id: role.id,allow:[f.ViewChannel],deny:[f.SendMessages]})
+			if(role.name === 'Dood') permissions.push({id: role.id,deny:[f.ViewChannel]})
+			if(role.name === 'Toeschouwer') permissions.push({id: role.id,deny:[f.ViewChannel]})
+			if(role.name === 'Achter de schermen') permissions.push({id: role.id,allow:[f.ViewChannel],deny:[f.SendMessages]})
+		}
 	}
-	return permissions;
+	return permissions
 }
 
 export {
