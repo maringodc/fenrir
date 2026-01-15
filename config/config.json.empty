@@ -1,0 +1,10 @@
+{
+	"TOKEN":"DISCORD_BOT_TOKEN_HERE",
+	"clientId": "DISCORD_BOT_ID_HERE",
+	"devId": "YOUR_OWN_USER_ID_HERE"
+    "guildIds": {
+        "SERVER_NAME_HERE": "SERVER_ID_HERE",
+        "SERVER2_NAME_HERE": "SERVER2_ID_HERE"
+    }
+
+}

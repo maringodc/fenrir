@@ -1,23 +1,25 @@
-const {SlashCommandBuilder, PermissionsBitField , ChannelType} = require('discord.js');
+import {ModalSubmitInteraction, Role, PermissionsBitField , ChannelType} from "discord.js";
+
 const f = PermissionsBitField.Flags;
 const basePosition = 2;
-let everyoneRole,
-	roleDM,
-	roleLevend,
-	roleDood,
-	roleToeschouwer,
-	roleSchermen;
+let everyoneRole: Role,
+	roleDM: Role,
+	roleLevend: Role,
+	roleDood: Role,
+	roleToeschouwer: Role,
+	roleSchermen: Role;
 
-async function setupGame(interaction, title, number) {
+async function setupGame(interaction: ModalSubmitInteraction, title: string, number: string) {
 
+	if(!interaction.guild){
+		console.log('No guild found..');
+		return
+	}
 	console.log('Grabbing roles..');
 
-	everyoneRole = interaction.guild.roles.everyone;
-	roleDM = interaction.guild.roles.cache.find(role => role.name === 'DM');
-	roleLevend = interaction.guild.roles.cache.find(role => role.name === 'Levend');
-	roleDood = interaction.guild.roles.cache.find(role => role.name === 'Dood');
-	roleToeschouwer = interaction.guild.roles.cache.find(role => role.name === 'Toeschouwer');
-	roleSchermen = interaction.guild.roles.cache.find(role => role.name === 'Achter de schermen');
+	if(!getRoles(interaction)){
+		console.log("Something went wrong grabbing roles..");
+	}
 
 	console.log('Setting up the game with title: ' + title);
 
@@ -107,8 +109,29 @@ async function setupGame(interaction, title, number) {
 	return true;
 }
 
+function getRoles(interaction: ModalSubmitInteraction): boolean{
+	if(!interaction.guild) return false
+
+	everyoneRole = interaction.guild.roles.everyone;
+	const troleDM = interaction.guild.roles.cache.find(role => role.name === 'DM');
+	const troleLevend = interaction.guild.roles.cache.find(role => role.name === 'Levend');
+	const troleDood = interaction.guild.roles.cache.find(role => role.name === 'Dood');
+	const troleToeschouwer = interaction.guild.roles.cache.find(role => role.name === 'Toeschouwer');
+	const troleSchermen = interaction.guild.roles.cache.find(role => role.name === 'Achter de schermen');
+
+	if(typeof troleDM === "undefined"){
+		return false;
+	}
+	else {
+		roleDM = troleDM
+	}
+
+
+	return true;
+}
+
 function getCategoryPermissionsByType(type) {
-	const permissions = [
+	let permissions = [
 		{
 			id: everyoneRole.id,
 			deny: [
@@ -125,6 +148,19 @@ function getCategoryPermissionsByType(type) {
 				f.ManageMessages,
 			],
 		},
+		{
+			id: roleDM.id,
+			allow: [
+				f.ViewChannel,
+				f.ManageChannels,
+				f.SendMessages,
+				f.ManageMessages,
+			],
+			deny: [
+				f.ViewChannel,
+				f.CreatePrivateThreads,
+			],
+		},
 	];
 	if (type === "TYPE_MAIN") {
 		permissions.push(
@@ -138,14 +174,11 @@ function getCategoryPermissionsByType(type) {
 		);
 		permissions.push(
 			{
-				id: roleDood.id,
-				allow: [
-					f.ViewChannel,
-				],
+				id: roleDood.id;
 				deny: [
 					f.SendMessages,
 					f.SendMessagesInThreads,
-				],
+				];
 			}
 		);
 		permissions.push(
@@ -383,4 +416,6 @@ function getChannelPermissionsByType(type) {
 	return permissions;
 }
 
-exports.setupGame = setupGame;
+export {
+	setupGame
+}
