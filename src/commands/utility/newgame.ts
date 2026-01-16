@@ -15,7 +15,6 @@ export default {
 		.setName(name)
 		.setDescription('New Game!'),
 	run: async (interaction) => {
-		console.log("Received newgame Command");
 		if (interaction.isChatInputCommand()) {
 
 			// Create the modal

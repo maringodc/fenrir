@@ -6,7 +6,6 @@ import type {TextInputModalData} from "discord.js/typings";
 export default {
 	name: 'interactionCreate',
 	run: async (client, interaction) => {
-		console.log("Received InteractionCreate");
 		if (!interaction.inGuild()) return
 		if (interaction instanceof CommandInteraction) {
 
