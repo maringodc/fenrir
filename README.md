@@ -1,4 +1,4 @@
-1. config.json.empty > config.json
-2. fill config.json with neccessary stuff
-3. run node . to deploy bot
-4. run 'node deploy_commands' to deploy commands to Discord
+1. copy config.json.empty to config.json
+2. fill config.json with necessary stuff
+3. run `npm install` to install node_modules
+4. run `node run fenrir` to deploy bot
