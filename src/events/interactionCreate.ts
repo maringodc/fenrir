@@ -25,19 +25,19 @@ export default {
 		}
 		else if (interaction instanceof ModalSubmitInteraction){
 			if(interaction.customId === 'newgame'){
+				await interaction.deferReply();
 				console.log("Got modal submit for newgame")
 				// @ts-ignore
 				const gameNumber: TextInputModalData = interaction.fields.getField("gameNumberInput");
 				// @ts-ignore
-				const gameTitle: TextInputModalData = interaction.fields.getField("gameNumberInput");
-				console.log(interaction.fields.getField("gameTitleInput"));
+				const gameTitle: TextInputModalData = interaction.fields.getField("gameTitleInput");
 				const reply = await setupGame(
 					interaction,
 					gameNumber.value,
 					gameTitle.value
 				);
 				if(reply){
-					await interaction.reply({content: "De categorieën en kanalen zijn aangemaakt."})
+					await interaction.editReply({content: "De categorieën en kanalen zijn aangemaakt."})
 				}
 			}
 		}

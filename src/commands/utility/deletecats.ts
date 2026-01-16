@@ -35,7 +35,7 @@ export default {
 
 			await interaction.followUp("Done.");
 		} else {
-			await interaction.reply({ content: "Not enough permissions" });
+			await interaction.followUp({ content: "Not enough permissions" });
 		}
 	},
 } as Command;

@@ -14,7 +14,7 @@ export default {
 		}).setToken(config.TOKEN);
 
 		const command = client.commands.map((m) => m.data);
-		const devCommand = client.devcommands.map((m) => m.data);
+		const nodevCommand = client.nodevcommands.map((m) => m.data);
 
 		await (async () => {
 			try {
@@ -22,11 +22,11 @@ export default {
 				} else {
 					for(const guildId of config.guildIds){
 						await rest.put(Routes.applicationGuildCommands(config.clientId, guildId), {
-							body: command,
+							body: nodevCommand,
 						})
 					}
 					await rest.put(Routes.applicationGuildCommands(config.clientId, config.devGuild), {
-						body: devCommand,
+						body: command,
 					})
 					log("SUCCESS", "clientReady.ts",`Registering commands was a success.`)
 				}
