@@ -31,21 +31,17 @@ export default class WerewolfClient extends Client {
 
         try {
             await this.login(config.TOKEN);
-            log(
-                "SUCCESS",
-                "src/index.ts",
-                `Logged in as ${this.user!.tag}`
-            );
+            log("SUCCESS","Client.ts",`Logged in as ${this.user!.tag}`);
         } catch (e) {
             // @ts-ignore
-            log("ERROR", "src/index.ts", `Error logging in: ${e.message}`);
+            log("ERROR", "Client.ts", `Error logging in: ${e.message}`);
         }
 
-        log("SUCCESS","src/index.ts",`Added ${this.commands.size} commands and ${this.events.size} events`);
+        log("SUCCESS","Client.ts",`Added ${this.commands.size} commands and ${this.events.size} events`);
 
         this.on('modalSubmit', (modal) => {
             console.log(modal);
-            log("SUCCESS", "src/index.ts", "Modal has been submitted");
+            log("SUCCESS", "Client.ts", "Modal has been submitted");
         })
     }
 }
