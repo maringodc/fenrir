@@ -1,7 +1,6 @@
 import {
 	LabelBuilder,
 	ModalBuilder,
-	PermissionsBitField,
 	SlashCommandBuilder,
 	TextInputBuilder,
 	TextInputStyle
@@ -12,8 +11,9 @@ const name = "newgame";
 
 export default {
 	name: name,
-	data: new SlashCommandBuilder().setName(name).setDescription('New Game!'),
-	//clientPerms: [PermissionsBitField.Flags.SendMessages],
+	data: new SlashCommandBuilder()
+		.setName(name)
+		.setDescription('New Game!'),
 	run: async (interaction) => {
 		console.log("Received newgame Command");
 		if (interaction.isChatInputCommand()) {

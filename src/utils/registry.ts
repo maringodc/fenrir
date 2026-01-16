@@ -4,6 +4,7 @@ import type { Command, Event } from "../interfaces";
 import Client from "../structures/Client"
 import {fileAndDirNames, log} from "./utils";
 import { pathToFileURL } from 'url'
+import config from "../../config/config.json";
 
 async function registerCommands(client: Client, ...dirs: string[]) {
 
@@ -18,7 +19,7 @@ async function registerCommands(client: Client, ...dirs: string[]) {
                     try {
                         const cmdModule = (
                             await import(pathToFileURL(filePath).href)).default;
-                        const { name, run } = cmdModule;
+                        const { name, run, guildId } = cmdModule;
 
                         if (!name) {
                             log("WARNING", "src/registry.ts", `The command '${filePath}' doesn't have a name`);
@@ -36,7 +37,10 @@ async function registerCommands(client: Client, ...dirs: string[]) {
                             continue;
                         }
 
-                        client.commands.set(name, cmdModule);
+                        if(guildId !== config.devGuild){
+                            client.commands.set(name, cmdModule);
+                        }
+                        client.devcommands.set(name, cmdModule);
 
                     } catch (e) {
                         // @ts-ignore

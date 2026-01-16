@@ -6,6 +6,7 @@ import { registerCommands, registerEvents } from "../utils/registry";
 
 export default class WerewolfClient extends Client {
     public commands: Collection<string, Command> = new Collection();
+    public devcommands: Collection<string, Command> = new Collection();
     public events: Collection<string, Event> = new Collection();
     public guildInfoCache: Collection<Discord.Snowflake, GuildInfo> = new Collection();
 

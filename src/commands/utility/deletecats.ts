@@ -6,8 +6,9 @@ export default {
     name: 'deletecats',
 	data: new SlashCommandBuilder()
 		.setName('deletecats')
-		.setDescription('Delete WW cats')
+		.setDescription('Delete WW categories')
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+	guildId: config.devGuild,
 	run: async (interaction)=> {
         if(!interaction.member || !interaction.guild){
             await interaction.reply({ content: "Not enough permissions" });
