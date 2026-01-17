@@ -1,4 +1,4 @@
-import type {Command} from "../../interfaces";
+import {type Command, CommandNames} from "../../interfaces";
 import {
 	SlashCommandBuilder,
 	PermissionFlagsBits,
@@ -8,10 +8,12 @@ import {
 } from "discord.js";
 import config from "../../../config/config.json";
 
+const commandName = CommandNames.Deletecats;
+
 export default {
-    name: 'deletecats',
+    name: commandName,
 	data: new SlashCommandBuilder()
-		.setName('deletecats')
+		.setName(commandName)
 		.setDescription('Delete WW categories')
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	guildId: config.devGuild,

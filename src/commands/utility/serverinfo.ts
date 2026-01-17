@@ -3,14 +3,14 @@ import {
     EmbedBuilder,
     SlashCommandBuilder, TextChannel,
 } from 'discord.js';
-import type {Command} from "../../interfaces";
+import {type Command, CommandNames} from "../../interfaces";
 
-const name = "serverinfo";
+const commandName = CommandNames.ServerInfo;
 
 export default {
-    name: name,
+    name: commandName,
     data: new SlashCommandBuilder()
-        .setName(name)
+        .setName(commandName)
         .setDescription('Get serverinfo'),
     run: async (interaction) => {
         if (interaction.isChatInputCommand()) {

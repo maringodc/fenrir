@@ -1,23 +1,22 @@
 import {
     ActionRowBuilder,
     ButtonBuilder,
-    ButtonStyle,
+    ButtonStyle, type Channel,
     ChannelType,
     SlashCommandBuilder,
 } from 'discord.js';
-import type {Command} from "../../interfaces";
+import {type Command, CommandNames} from "../../interfaces";
 import config from "../../../config/config.json";
 
-const name = "deletegame";
+const commandName = CommandNames.DeleteGame;
 
 export default {
-    name: name,
+    name: commandName,
     data: new SlashCommandBuilder()
-        .setName(name)
+        .setName(commandName)
         .setDescription('Delete a game'),
     guildId: config.devGuild,
     run: async (interaction) => {
-        console.log("Received deletegame Command")
         if (interaction.isChatInputCommand()) {
             const categoryChannels = interaction.guild?.channels?.cache?.filter((channel) => channel.type === ChannelType.GuildCategory);
 
@@ -40,7 +39,7 @@ export default {
                 for(const game of games.slice(0, 5)) {
                     row.addComponents(
                         new ButtonBuilder()
-                            .setCustomId(`deletegame-${game}`)
+                            .setCustomId(`${commandName}-${game}`)
                             .setLabel(game)
                             .setStyle(ButtonStyle.Primary)
                     )
@@ -50,6 +49,27 @@ export default {
                     components: [row],
                 });
             }
+        }
+    },
+    onButton: async (interaction) => {
+        await interaction.deferReply();
+        if(interaction.guild) {
+            const splitId = interaction.customId.split("-");
+            const guild = interaction.guild;
+            const categoryChannels = guild.channels?.cache?.filter((channel: Channel) => {
+                if (channel.type === ChannelType.GuildCategory) {
+                    if (channel.name.slice(0, splitId[1].length) === splitId[1]) {
+                        channel.children.cache.each(child => {
+                            guild.channels.delete(child.id);
+                        });
+                        guild.channels.delete(channel.id);
+                        return channel;
+                    }
+                }
+                return false;
+            });
+            await interaction.editReply({content: `Er zijn ${categoryChannels.size} categorieën van Spel ${splitId[1]} is verwijderd.`})
+            return;
         }
     }
 } as Command
