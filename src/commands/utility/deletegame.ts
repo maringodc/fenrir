@@ -40,7 +40,7 @@ export default {
                 for(const game of games.slice(0, 5)) {
                     row.addComponents(
                         new ButtonBuilder()
-                            .setCustomId(`game${game}`)
+                            .setCustomId(`deletegame-${game}`)
                             .setLabel(game)
                             .setStyle(ButtonStyle.Primary)
                     )
