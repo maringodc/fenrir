@@ -1,8 +1,7 @@
 import fs from "fs";
 import path from "path";
-import type { Command, Event } from "../interfaces";
 import Client from "../structures/Client"
-import {fileAndDirNames, log} from "./utils";
+import {log} from "./utils";
 import { pathToFileURL } from 'url'
 import config from "../../config/config.json";
 

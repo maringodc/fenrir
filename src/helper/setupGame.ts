@@ -1,4 +1,9 @@
-import {ModalSubmitInteraction, Role, PermissionsBitField , ChannelType} from "discord.js";
+import {
+	ModalSubmitInteraction,
+	Role,
+	PermissionsBitField,
+	ChannelType
+} from "discord.js";
 import {log} from "../utils/utils";
 
 const f = PermissionsBitField.Flags;
@@ -8,17 +13,16 @@ const roles: Role[] = [];
 async function setupGame(interaction: ModalSubmitInteraction, number: string, title: string) {
 
 	if(!interaction.guild){
-		console.log('No guild found..');
+		log("ERROR", "setupGame.ts", `No guild found.`);
 		return
 	}
-	console.log('Grabbing roles..');
 
 	if(!getRoles(interaction)){
-		console.log("Something went wrong grabbing roles..");
+		log("ERROR", "setupGame.ts", `Something went wrong grabbing roles.`);
 		return;
 	}
 
-	console.log('Setting up the game with title: ' + title);
+	log("NOTE", "setupGame.ts", `Setting up the game with title: ${title}`);
 
 	// 4 Categories
 	const mainCategory = await interaction.guild.channels.create({
@@ -103,6 +107,8 @@ async function setupGame(interaction: ModalSubmitInteraction, number: string, ti
 		permissionOverwrites: getChannelPermissionsByType("CHANNEL_TYPE_BOND"),
 	});
 
+	log("SUCCESS", "setupGame.ts", `The game ${title} has been set up.`);
+
 	return true;
 }
 
@@ -115,7 +121,7 @@ function getRoles(interaction: ModalSubmitInteraction): boolean{
 			roles.push(tempRole)
 		}
 		else{
-			log("ERROR", "helper/setupGame.ts", `Can't find role: ${roleName}`)
+			log("ERROR", "setupGame.ts", `Can't find role: ${roleName}`)
 			return false
 		}
 	}

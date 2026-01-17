@@ -1,6 +1,4 @@
 import Discord from "discord.js";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 const consoleColors = {
     "SUCCESS": "\u001b[32m",
@@ -30,15 +28,7 @@ function log(type: "SUCCESS" | "ERROR" | "WARNING" | "NOTE", path: string, text:
     console.log(`\u001b[36;1m<Fenrir>\u001b[0m\u001b[34m [${path}]\u001b[0m - ${consoleColors[type]}${text}\u001b[0m`);
 }
 
-
-function fileAndDirNames(url: string) {
-    const __filename = fileURLToPath(url);
-    const __dirname = dirname(__filename);
-    return {__filename, __dirname}
-}
-
 export {
     missingPermissions,
     log,
-    fileAndDirNames,
 };

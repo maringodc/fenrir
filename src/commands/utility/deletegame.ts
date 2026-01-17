@@ -1,7 +1,8 @@
 import {
     ActionRowBuilder,
     ButtonBuilder,
-    ButtonStyle, type Channel,
+    ButtonStyle,
+    type Channel,
     ChannelType,
     SlashCommandBuilder,
 } from 'discord.js';

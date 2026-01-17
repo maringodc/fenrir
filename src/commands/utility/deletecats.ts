@@ -1,4 +1,3 @@
-import {type Command, CommandNames} from "../../interfaces";
 import {
 	SlashCommandBuilder,
 	PermissionFlagsBits,
@@ -6,6 +5,7 @@ import {
 	GuildMember,
 	type CommandInteraction, type CacheType
 } from "discord.js";
+import {type Command, CommandNames} from "../../interfaces";
 import config from "../../../config/config.json";
 
 const commandName = CommandNames.Deletecats;

@@ -1,7 +1,7 @@
 import {
     ChannelType,
     EmbedBuilder,
-    SlashCommandBuilder, TextChannel,
+    SlashCommandBuilder,
 } from 'discord.js';
 import {type Command, CommandNames} from "../../interfaces";
 
