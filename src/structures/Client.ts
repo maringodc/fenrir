@@ -6,7 +6,7 @@ import { registerCommands, registerEvents } from "../utils/registry";
 
 export default class WerewolfClient extends Client {
     public commands: Collection<string, Command> = new Collection();
-    public devcommands: Collection<string, Command> = new Collection();
+    public nodevcommands: Collection<string, Command> = new Collection();
     public events: Collection<string, Event> = new Collection();
     public guildInfoCache: Collection<Discord.Snowflake, GuildInfo> = new Collection();
 
@@ -38,7 +38,7 @@ export default class WerewolfClient extends Client {
             log("ERROR", "Client.ts", `Error logging in: ${e.message}`);
         }
 
-        log("SUCCESS","Client.ts",`Added ${this.commands.size} commands and ${this.events.size} events`);
+        log("SUCCESS","Client.ts",`Added ${this.commands.size} commands, ${this.nodevcommands.size} devcommands and ${this.events.size} events`);
 
         this.on('modalSubmit', (modal) => {
             console.log(modal);

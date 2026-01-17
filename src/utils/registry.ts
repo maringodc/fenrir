@@ -38,9 +38,9 @@ async function registerCommands(client: Client, ...dirs: string[]) {
                         }
 
                         if(guildId !== config.devGuild){
-                            client.commands.set(name, cmdModule);
+                            client.nodevcommands.set(name, cmdModule);
                         }
-                        client.devcommands.set(name, cmdModule);
+                        client.commands.set(name, cmdModule);
 
                     } catch (e) {
                         // @ts-ignore
