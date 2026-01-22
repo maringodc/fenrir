@@ -8,7 +8,7 @@ const RoleNames = {
     Dead: "Dood",
     Spectator: "Toeschouwer",
     BehindTheScenes: "Achter de schermen",
-} as const;
+}
 const roleNameStrings: string[] = [
     RoleNames.DM,
     RoleNames.Alive,

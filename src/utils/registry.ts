@@ -6,7 +6,6 @@ import {pathToFileURL} from 'url'
 import config from "../../config/config.json";
 
 async function registerCommands(client: Client, ...dirs: string[]) {
-
     for (const dir of dirs) {
         const files = await fs.promises.readdir(dir);
         for (let file of files) {

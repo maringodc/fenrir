@@ -10,7 +10,7 @@ export default {
     name: commandName,
     data: new SlashCommandBuilder()
         .setName(commandName)
-        .setDescription('Set everyone to Audience Role'),
+        .setDescription('Set everyone to Spectator Role'),
     run: async (interaction) => {
         if (interaction.isChatInputCommand()) {
             const roles = getRoles(interaction);

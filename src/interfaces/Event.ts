@@ -1,7 +1,7 @@
-import Client from '../structures/Client'
+import WerewolfClient from '../structures/Client'
 import type {ClientEvents} from 'discord.js'
 
-export type EventRun = (client: Client, ...args: any[]) => any
+export type EventRun = (client: WerewolfClient, ...args: any[]) => any
 
 export interface Event {
     name: keyof ClientEvents

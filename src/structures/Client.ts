@@ -38,11 +38,6 @@ export default class WerewolfClient extends Client {
             log("ERROR", "Client.ts", `Error logging in: ${e.message}`);
         }
 
-        log("SUCCESS", "Client.ts", `Added ${this.commands.size} commands, ${this.nodevcommands.size} devcommands and ${this.events.size} events`);
-
-        this.on('modalSubmit', (modal) => {
-            console.log(modal);
-            log("SUCCESS", "Client.ts", "Modal has been submitted");
-        })
+        log("SUCCESS", "Client.ts", `Added ${this.commands.size} Commands, ${this.nodevcommands.size} noDevCommands and ${this.events.size} Events`);
     }
 }
