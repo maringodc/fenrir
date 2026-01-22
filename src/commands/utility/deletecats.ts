@@ -8,7 +8,7 @@ import {
 import {type Command, CommandNames} from "../../interfaces";
 import config from "../../../config/config.json";
 
-const commandName = CommandNames.Deletecats;
+const commandName = CommandNames.DeleteCats;
 
 export default {
     name: commandName,
