@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import Client from "../structures/Client"
 import {log} from "./utils";
-import { pathToFileURL } from 'url'
+import {pathToFileURL} from 'url'
 import config from "../../config/config.json";
 
 async function registerCommands(client: Client, ...dirs: string[]) {
@@ -18,7 +18,7 @@ async function registerCommands(client: Client, ...dirs: string[]) {
                     try {
                         const cmdModule = (
                             await import(pathToFileURL(filePath).href)).default;
-                        const { name, run, guildId } = cmdModule;
+                        const {name, run, guildId} = cmdModule;
 
                         if (!name) {
                             log("WARNING", "src/registry.ts", `The command '${filePath}' doesn't have a name`);
@@ -36,7 +36,7 @@ async function registerCommands(client: Client, ...dirs: string[]) {
                             continue;
                         }
 
-                        if(guildId !== config.devGuild){
+                        if (guildId !== config.devGuild) {
                             client.nodevcommands.set(name, cmdModule);
                         }
                         client.commands.set(name, cmdModule);
@@ -62,17 +62,17 @@ async function registerEvents(client: Client, dir: string) {
                 try {
                     const eventModule = (
                         await import(pathToFileURL(filePath).href)).default;
-                    const { name } = eventModule;
+                    const {name} = eventModule;
                     client.events.set(name, eventModule);
                     client.on(name, eventModule.run.bind(null, client));
 
                 } catch (e) {
                     // @ts-ignore
-                    log("ERROR","src/registry.ts",`Error loading events: ${e.message}`);
+                    log("ERROR", "src/registry.ts", `Error loading events: ${e.message}`);
                 }
             }
         }
     }
 }
 
-export { registerEvents, registerCommands };
+export {registerEvents, registerCommands};

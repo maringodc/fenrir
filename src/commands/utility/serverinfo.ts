@@ -46,10 +46,10 @@ export default {
                 .setTitle(serverName)
                 .setThumbnail(image)
                 .addFields(
-                    { name: 'Main info', value: mainInfo, inline: true},
-                    { name: 'Channel Info', value: channelInfo, inline: true},
+                    {name: 'Main info', value: mainInfo, inline: true},
+                    {name: 'Channel Info', value: channelInfo, inline: true},
                 )
-            await interaction.reply({ embeds: [embedMessage]});
+            await interaction.reply({embeds: [embedMessage]});
         }
     }
 } as Command

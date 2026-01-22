@@ -25,13 +25,12 @@ export default {
                 command.onModalSubmit(interaction);
             }
         } else if (interaction.isButton()) {
-			const splitId = interaction.customId.split("-");
-			if(splitId[0] === CommandNames.DeleteGame){
+            const splitId = interaction.customId.split("-");
+            if (splitId[0] === CommandNames.DeleteGame) {
                 const command = interaction.client.commands.get(CommandNames.DeleteGame);
                 command.onButton(interaction);
-			}
-        }
-        else {
+            }
+        } else {
             await interaction.reply({content: `Something went wrong`})
         }
     },
