@@ -2,13 +2,13 @@ import {
     ModalSubmitInteraction,
     Role,
     PermissionsBitField,
-    ChannelType
+    ChannelType, BaseInteraction
 } from "discord.js";
 import {log} from "../utils/utils";
+import {getRoles, RoleNames} from "./gameData";
 
 const f = PermissionsBitField.Flags;
-const roleNames: string[] = ["DM", "Levend", "Dood", "Toeschouwer", "Achter de schermen"]
-const roles: Role[] = [];
+let roles: Role[] = [];
 
 async function setupGame(interaction: ModalSubmitInteraction, number: string, title: string) {
 
@@ -17,10 +17,14 @@ async function setupGame(interaction: ModalSubmitInteraction, number: string, ti
         return
     }
 
-    if (!getRoles(interaction)) {
+    const tempRoles = getRoles(interaction);
+
+    if (tempRoles.length == 0) {
         log("ERROR", "setupGame.ts", `Something went wrong grabbing roles.`);
         return;
     }
+
+    roles = tempRoles;
 
     log("NOTE", "setupGame.ts", `Setting up the game with title: ${title}`);
 
@@ -112,41 +116,26 @@ async function setupGame(interaction: ModalSubmitInteraction, number: string, ti
     return true;
 }
 
-function getRoles(interaction: ModalSubmitInteraction): boolean {
-    if (!interaction.guild) return false
-    roles.push(interaction.guild.roles.everyone)
-    for (const roleName of roleNames) {
-        const tempRole: Role | undefined = interaction.guild.roles.cache.find(role => role.name === roleName);
-        if (tempRole instanceof Role) {
-            roles.push(tempRole)
-        } else {
-            log("ERROR", "setupGame.ts", `Can't find role: ${roleName}`)
-            return false
-        }
-    }
-    return true
-}
-
 function getCategoryPermissionsByType(type: string) {
     let permissions: ({ id: any; deny?: any[]; allow?: any[] })[] = []
     if (type === "TYPE_MAIN") {
         for (let role of roles) {
-            if (role.name === '@everyone') permissions.push({
+            if (role.name === RoleNames.Everyone) permissions.push({
                 id: role.id,
                 deny: [f.ViewChannel, f.CreatePrivateThreads]
             })
-            if (role.name === 'DM') permissions.push({
+            if (role.name === RoleNames.DM) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel, f.ManageChannels, f.SendMessages, f.ManageMessages]
             })
-            if (role.name === 'Levend') permissions.push({id: role.id, allow: [f.ViewChannel, f.SendMessages]})
-            if (role.name === 'Dood') permissions.push({id: role.id, deny: [f.SendMessages, f.SendMessagesInThreads]})
-            if (role.name === 'Toeschouwer') permissions.push({
+            if (role.name === RoleNames.Alive) permissions.push({id: role.id, allow: [f.ViewChannel, f.SendMessages]})
+            if (role.name === RoleNames.Dead) permissions.push({id: role.id, deny: [f.SendMessages, f.SendMessagesInThreads]})
+            if (role.name === RoleNames.Spectator) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel],
                 deny: [f.SendMessages, f.SendMessagesInThreads]
             })
-            if (role.name === 'Achter de schermen') permissions.push({
+            if (role.name === RoleNames.BehindTheScenes) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel],
                 deny: [f.SendMessages, f.SendMessagesInThreads]
@@ -154,37 +143,36 @@ function getCategoryPermissionsByType(type: string) {
         }
     } else if (type === "TYPE_ROLES") {
         for (let role of roles) {
-            if (role.name === '@everyone') permissions.push({
+            if (role.name === RoleNames.Everyone) permissions.push({
                 id: role.id,
                 deny: [f.ViewChannel, f.CreatePrivateThreads]
             })
-            if (role.name === 'DM') permissions.push({
+            if (role.name === RoleNames.DM) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel, f.ManageChannels, f.SendMessages, f.ManageMessages]
             })
-            if (role.name === 'Achter de schermen') permissions.push({
+            if (role.name === RoleNames.BehindTheScenes) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel],
                 deny: [f.SendMessages, f.SendMessagesInThreads]
             })
         }
-    }
-    if (type === "TYPE_BOND") {
+    } else if (type === "TYPE_BOND") {
         for (let role of roles) {
-            if (role.name === '@everyone') permissions.push({
+            if (role.name === RoleNames.Everyone) permissions.push({
                 id: role.id,
                 deny: [f.ViewChannel, f.CreatePrivateThreads]
             })
-            if (role.name === 'DM') permissions.push({
+            if (role.name === RoleNames.DM) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel, f.ManageChannels, f.SendMessages, f.ManageMessages]
             })
-            if (role.name === 'Levend') permissions.push({
+            if (role.name === RoleNames.Alive) permissions.push({
                 id: role.id,
                 allow: [f.SendMessages, f.ManageChannels, f.ManageRoles],
                 deny: [f.ViewChannel,]
             })
-            if (role.name === 'Achter de schermen') permissions.push({
+            if (role.name === RoleNames.BehindTheScenes) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel],
                 deny: [f.SendMessages, f.SendMessagesInThreads]
@@ -198,81 +186,78 @@ function getChannelPermissionsByType(type: string) {
     let permissions: ({ id: any; deny?: any[]; allow?: any[] })[] = []
     if (type === "CHANNEL_TYPE_SIGNUP") {
         for (let role of roles) {
-            if (role.name === '@everyone') permissions.push({
+            if (role.name === RoleNames.Everyone) permissions.push({
                 id: role.id,
                 deny: [f.ViewChannel, f.CreatePrivateThreads]
             })
-            if (role.name === 'DM') permissions.push({
+            if (role.name === RoleNames.DM) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel, f.ManageChannels, f.SendMessages, f.ManageMessages]
             })
-            if (role.name === 'Levend') permissions.push({id: role.id, allow: [f.ViewChannel], deny: [f.SendMessages]})
-            if (role.name === 'Dood') permissions.push({id: role.id, allow: [f.ViewChannel, f.SendMessages]})
-            if (role.name === 'Toeschouwer') permissions.push({id: role.id, allow: [f.ViewChannel, f.SendMessages]})
-            if (role.name === 'Achter de schermen') permissions.push({
+            if (role.name === RoleNames.Alive) permissions.push({id: role.id, allow: [f.ViewChannel], deny: [f.SendMessages]})
+            if (role.name === RoleNames.Dead) permissions.push({id: role.id, allow: [f.ViewChannel, f.SendMessages]})
+            if (role.name === RoleNames.Spectator) permissions.push({id: role.id, allow: [f.ViewChannel, f.SendMessages]})
+            if (role.name === RoleNames.BehindTheScenes) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel, f.SendMessages]
             })
         }
-    }
-    if (type === "CHANNEL_TYPE_PLAY") {
+    } else if (type === "CHANNEL_TYPE_PLAY") {
         for (let role of roles) {
-            if (role.name === '@everyone') permissions.push({
+            if (role.name === RoleNames.Everyone) permissions.push({
                 id: role.id,
                 deny: [f.ViewChannel, f.CreatePrivateThreads]
             })
-            if (role.name === 'DM') permissions.push({
+            if (role.name === RoleNames.DM) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel, f.ManageChannels, f.SendMessages, f.ManageMessages]
             })
-            if (role.name === 'Levend') permissions.push({id: role.id, allow: [f.ViewChannel, f.SendMessages]})
-            if (role.name === 'Dood') permissions.push({id: role.id, allow: [f.ViewChannel], deny: [f.SendMessages]})
-            if (role.name === 'Toeschouwer') permissions.push({
+            if (role.name === RoleNames.Alive) permissions.push({id: role.id, allow: [f.ViewChannel, f.SendMessages]})
+            if (role.name === RoleNames.Dead) permissions.push({id: role.id, allow: [f.ViewChannel], deny: [f.SendMessages]})
+            if (role.name === RoleNames.Spectator) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel],
                 deny: [f.SendMessages]
             })
-            if (role.name === 'Achter de schermen') permissions.push({
-                id: role.id,
-                allow: [f.ViewChannel],
-                deny: [f.SendMessages]
-            })
-        }
-    }
-    if (type === "CHANNEL_TYPE_DOOD") {
-        for (let role of roles) {
-            if (role.name === '@everyone') permissions.push({
-                id: role.id,
-                deny: [f.ViewChannel, f.CreatePrivateThreads]
-            })
-            if (role.name === 'DM') permissions.push({
-                id: role.id,
-                allow: [f.ViewChannel, f.ManageChannels, f.SendMessages, f.ManageMessages]
-            })
-            if (role.name === 'Levend') permissions.push({id: role.id, deny: [f.ViewChannel]})
-            if (role.name === 'Dood') permissions.push({id: role.id, allow: [f.ViewChannel, f.SendMessages]})
-            if (role.name === 'Toeschouwer') permissions.push({id: role.id, deny: [f.ViewChannel]})
-            if (role.name === 'Achter de schermen') permissions.push({
+            if (role.name === RoleNames.BehindTheScenes) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel],
                 deny: [f.SendMessages]
             })
         }
-    }
-    if (type === "CHANNEL_TYPE_BOND") {
+    } else if (type === "CHANNEL_TYPE_DOOD") {
         for (let role of roles) {
-            if (role.name === '@everyone') permissions.push({
+            if (role.name === RoleNames.Everyone) permissions.push({
                 id: role.id,
                 deny: [f.ViewChannel, f.CreatePrivateThreads]
             })
-            if (role.name === 'DM') permissions.push({
+            if (role.name === RoleNames.DM) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel, f.ManageChannels, f.SendMessages, f.ManageMessages]
             })
-            if (role.name === 'Levend') permissions.push({id: role.id, allow: [f.ViewChannel], deny: [f.SendMessages]})
-            if (role.name === 'Dood') permissions.push({id: role.id, deny: [f.ViewChannel]})
-            if (role.name === 'Toeschouwer') permissions.push({id: role.id, deny: [f.ViewChannel]})
-            if (role.name === 'Achter de schermen') permissions.push({
+            if (role.name === RoleNames.Alive) permissions.push({id: role.id, deny: [f.ViewChannel]})
+            if (role.name === RoleNames.Dead) permissions.push({id: role.id, allow: [f.ViewChannel, f.SendMessages]})
+            if (role.name === RoleNames.Spectator) permissions.push({id: role.id, deny: [f.ViewChannel]})
+            if (role.name === RoleNames.BehindTheScenes) permissions.push({
+                id: role.id,
+                allow: [f.ViewChannel],
+                deny: [f.SendMessages]
+            })
+        }
+    } else if (type === "CHANNEL_TYPE_BOND") {
+        for (let role of roles) {
+            if (role.name === RoleNames.Everyone) permissions.push({
+                id: role.id,
+                deny: [f.ViewChannel, f.CreatePrivateThreads]
+            })
+            if (role.name === RoleNames.DM) permissions.push({
+                id: role.id,
+                allow: [f.ViewChannel, f.ManageChannels, f.SendMessages, f.ManageMessages]
+            })
+            if (role.name === RoleNames.Alive) permissions.push({id: role.id, allow: [f.ViewChannel], deny: [f.SendMessages]})
+            if (role.name === RoleNames.Dead) permissions.push({id: role.id, deny: [f.ViewChannel]})
+            if (role.name === RoleNames.Spectator) permissions.push({id: role.id, deny: [f.ViewChannel]})
+            if (role.name === RoleNames.BehindTheScenes) permissions.push({
                 id: role.id,
                 allow: [f.ViewChannel],
                 deny: [f.SendMessages]

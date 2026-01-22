@@ -6,9 +6,10 @@ export type CommandButton = (interaction: ButtonInteraction) => any
 
 export const CommandNames = {
     DeleteGame: "deletegame",
-    Deletecats: "deletecats",
+    DeleteCats: "deletecats",
     NewGame: "newgame",
-    ServerInfo: "serverinfo"
+    ServerInfo: "serverinfo",
+    RoleToSpectator: "roletospectator",
 } as const;
 
 export interface Command {
