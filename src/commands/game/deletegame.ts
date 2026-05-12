@@ -45,7 +45,7 @@ export default {
                     )
                 }
                 await interaction.reply({
-                    content: "Welke game wil je verwijderen?",
+                    content: "Which game do you want to delete?",
                     components: [row],
                 });
             }
@@ -68,7 +68,7 @@ export default {
                 }
                 return false;
             });
-            await interaction.editReply({content: `Er zijn ${categoryChannels.size} categorieën van Spel ${splitId[1]} is verwijderd.`})
+            await interaction.editReply({content: `${categoryChannels.size} categories of the game ${splitId[1]} have been deleted.`})
             return;
         }
     }

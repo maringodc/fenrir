@@ -3,7 +3,7 @@ import type {Command, Event, GuildInfo} from "../interfaces";
 import config from "../../config/config.json";
 import {log} from "../utils/utils";
 import {registerCommands, registerEvents} from "../utils/registry";
-import {initDB} from "../helper/setupDB";
+import {initDB} from "../helper/initDB";
 
 export default class WerewolfClient extends Client {
     public commands: Collection<string, Command> = new Collection();

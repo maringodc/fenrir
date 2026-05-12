@@ -29,7 +29,7 @@ export default {
                 .setTitle('Setup');
 
             const gameTitle = new LabelBuilder()
-                .setLabel('Titel van het Spel?')
+                .setLabel('Title of the game?')
                 .setTextInputComponent(
                     new TextInputBuilder()
                         .setCustomId('gameTitleInput')
@@ -39,7 +39,7 @@ export default {
                 )
 
             const gameNumber = new LabelBuilder()
-                .setLabel('Nummer van het Spel?')
+                .setLabel('Number of the game?')
                 .setTextInputComponent(
                     new TextInputBuilder()
                         .setCustomId('gameNumberInput')
@@ -67,7 +67,7 @@ export default {
             if (reply) {
                 const game = new Game(gameTitle.value,gameNumber.value,interaction.guildId)
                 await Database.getRepository(Game).save(game)
-                await interaction.editReply({content: "De categorieën en kanalen zijn aangemaakt."})
+                await interaction.editReply({content: "The Categories and channels have been made."})
             }
         }
     }

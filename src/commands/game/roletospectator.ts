@@ -40,7 +40,7 @@ export default {
                         }
                     });
                 }
-                await interaction.reply("Roles changed. *Note: Discord might need a minute to catch up.*");
+                await interaction.reply("Roles changed. *Note: Discord might need a while to catch up.*");
             } else {
                 await interaction.reply("Roles not changed, something went wrong")
             }
