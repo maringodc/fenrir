@@ -23,10 +23,18 @@ export default {
                 if (roleAlive && roleDead && roleSpectator && roleBTS) {
                     guildMembers.forEach((member) => {
                         if (!member.user.bot) {
-                            member.roles.remove(roleAlive.id)
-                            member.roles.remove(roleDead.id)
-                            member.roles.remove(roleBTS.id)
-                            member.roles.add(roleSpectator.id)
+                            if (member.roles.cache.some(role => role.id === roleAlive.id)) {
+                                member.roles.remove(roleAlive.id)
+                            }
+                            if (member.roles.cache.some(role => role.id === roleDead.id)) {
+                                member.roles.remove(roleDead.id)
+                            }
+                            if (member.roles.cache.some(role => role.id === roleBTS.id)) {
+                                member.roles.remove(roleBTS.id)
+                            }
+                            if (!member.roles.cache.some(role => role.id === roleSpectator.id)) {
+                                member.roles.add(roleSpectator.id)
+                            }
                         }
                     });
                 }
