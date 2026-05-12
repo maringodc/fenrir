@@ -3,6 +3,7 @@ import type {Command, Event, GuildInfo} from "../interfaces";
 import config from "../../config/config.json";
 import {log} from "../utils/utils";
 import {registerCommands, registerEvents} from "../utils/registry";
+import {setupDB} from "./Database";
 
 export default class WerewolfClient extends Client {
     public commands: Collection<string, Command> = new Collection();
@@ -27,8 +28,12 @@ export default class WerewolfClient extends Client {
 
     public async init() {
 
+        await setupDB();
+
         await registerEvents(this, "src/events");
         await registerCommands(this, 'src/commands');
+
+        log("SUCCESS", "Client.ts", `${this.user?.username} has ${this.commands.size} Commands, ${this.nodevcommands.size} noDevCommands and ${this.events.size} Events`);
 
         try {
             await this.login(config.TOKEN);
@@ -36,8 +41,8 @@ export default class WerewolfClient extends Client {
         } catch (e) {
             // @ts-ignore
             log("ERROR", "Client.ts", `Error logging in: ${e.message}`);
+            process.exit(11)
         }
 
-        log("SUCCESS", "Client.ts", `Added ${this.commands.size} Commands, ${this.nodevcommands.size} noDevCommands and ${this.events.size} Events`);
     }
 }
