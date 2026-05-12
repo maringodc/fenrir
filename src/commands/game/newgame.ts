@@ -5,7 +5,7 @@ import {
     SlashCommandBuilder,
     TextInputBuilder,
     TextInputStyle,
-    ComponentType
+    ComponentType, PermissionFlagsBits
 } from 'discord.js';
 import {type Command, CommandNames} from "../../interfaces";
 import {setupGame} from "../../helper/setupGame";
@@ -16,7 +16,8 @@ export default {
     name: commandName,
     data: new SlashCommandBuilder()
         .setName(commandName)
-        .setDescription('New Game!'),
+        .setDescription('New Game!')
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     run: async (interaction) => {
         if (interaction.isChatInputCommand()) {
 
