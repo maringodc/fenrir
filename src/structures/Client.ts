@@ -3,7 +3,7 @@ import type {Command, Event, GuildInfo} from "../interfaces";
 import config from "../../config/config.json";
 import {log} from "../utils/utils";
 import {registerCommands, registerEvents} from "../utils/registry";
-import {setupDB} from "./Database";
+import {initDB} from "../helper/setupDB";
 
 export default class WerewolfClient extends Client {
     public commands: Collection<string, Command> = new Collection();
@@ -28,21 +28,21 @@ export default class WerewolfClient extends Client {
 
     public async init() {
 
-        await setupDB();
+        await initDB();
 
         await registerEvents(this, "src/events");
         await registerCommands(this, 'src/commands');
 
-        log("SUCCESS", "Client.ts", `${this.user?.username} has ${this.commands.size} Commands, ${this.nodevcommands.size} noDevCommands and ${this.events.size} Events`);
-
         try {
             await this.login(config.TOKEN);
-            log("SUCCESS", "Client.ts", `Logged in as ${this.user!.tag}`);
+            log("SUCCESS", "Client.ts", `Logged in to Discord as ${this.user!.tag}`);
         } catch (e) {
             // @ts-ignore
             log("ERROR", "Client.ts", `Error logging in: ${e.message}`);
             process.exit(11)
         }
+
+        log("SUCCESS", "Client.ts", `${this.user?.username} has ${this.commands.size} Commands, ${this.nodevcommands.size} noDevCommands and ${this.events.size} Events`);
 
     }
 }

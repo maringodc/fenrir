@@ -22,7 +22,8 @@
     "resolveJsonModule": true,
     "rewriteRelativeImportExtensions": true,
     "erasableSyntaxOnly": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "emitDecoratorMetadata": true,
   },
   "exclude": ["node_modules"]
 }

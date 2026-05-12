@@ -9,6 +9,8 @@ import {
 } from 'discord.js';
 import {type Command, CommandNames} from "../../interfaces";
 import {setupGame} from "../../helper/setupGame";
+import {Game} from "../../entity/Game";
+import {Database} from "../../utils/database";
 
 const commandName = CommandNames.NewGame;
 
@@ -52,6 +54,7 @@ export default {
         }
     },
     onModalSubmit: async (interaction) => {
+        if(!interaction.guildId){return;}
         await interaction.deferReply();
         const gameNumber: ModalData = interaction.fields.getField("gameNumberInput");
         const gameTitle: ModalData = interaction.fields.getField("gameTitleInput");
@@ -62,6 +65,8 @@ export default {
                 gameTitle.value
             );
             if (reply) {
+                const game = new Game(gameTitle.value,gameNumber.value,interaction.guildId)
+                await Database.getRepository(Game).save(game)
                 await interaction.editReply({content: "De categorieën en kanalen zijn aangemaakt."})
             }
         }

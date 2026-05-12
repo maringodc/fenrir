@@ -10,7 +10,8 @@ It runs on Node v24
 
 Clone the project and run the following on the commandline:
 
-1. copy config.json.empty to config.json
+1. Make Postgres Database
+2. copy config.json.empty to config.json
 2. fill config.json with necessary stuff
 3. run `npm install` to install node_modules
-4. run `node run fenrir` to deploy bot
+4. run `npm run fenrir` to deploy bot
