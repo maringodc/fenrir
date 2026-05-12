@@ -6,6 +6,10 @@
     "guildIds": {
         "SERVER_NAME_HERE": "SERVER_ID_HERE",
         "SERVER2_NAME_HERE": "SERVER2_ID_HERE"
-    }
-
+    },
+    "dbhost":"DB_HOST",
+    "dbport":DB_PORT,
+    "dbuser":"DB_USERNAME",
+    "dbpass":"DB_PASSWORD"
+    "dbname":"DB_NAME"
 }

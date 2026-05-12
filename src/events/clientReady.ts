@@ -32,6 +32,7 @@ export default {
                 }
             } catch (error) {
                 log("ERROR", "clientReady.ts", `Unable to register commands: ${error}`)
+                process.exit(12)
             }
         })();
 
